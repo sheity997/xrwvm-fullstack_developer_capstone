@@ -1,6 +1,5 @@
 import logging
 import json
-from datetime import datetime
 
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
@@ -75,7 +74,10 @@ def get_cars(request):
         initiate()
 
     car_models = CarModel.objects.select_related('car_make')
-    cars = [{"CarModel": cm.name, "CarMake": cm.car_make.name} for cm in car_models]
+    cars = [
+        {"CarModel": cm.name, "CarMake": cm.car_make.name}
+        for cm in car_models
+    ]
 
     return JsonResponse({"CarModels": cars})
 
@@ -119,5 +121,8 @@ def add_review(request):
             return JsonResponse({"status": 200})
         except Exception as e:
             logger.error("Error posting review: %s", str(e))
-            return JsonResponse({"status": 401, "message": "Error in posting review"})
+            return JsonResponse({
+                "status": 401,
+                "message": "Error in posting review",
+            })
     return JsonResponse({"status": 403, "message": "Unauthorized"})
